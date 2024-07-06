@@ -6,6 +6,8 @@ const fileUpload = require('express-fileupload')
 dotenv.config()
 const PORT = process.env.PORT || 4010;
 
+//get routes
+const usersRouter = require('./src/router/usersRouter')
 
 const app = express()
 //miidlwares
@@ -19,6 +21,10 @@ app.get('/', (req, res) => {
     res.send("home")
 })
 
+//use routes
+
+app.use('/users' , usersRouter)
+
 const MONGO_URL = process.env.MONGO_URL
 mongoose.connect(MONGO_URL , {}).then(() => {
    
@@ -26,3 +32,4 @@ mongoose.connect(MONGO_URL , {}).then(() => {
 }).catch(err => {
     console.log(err);
 })
+

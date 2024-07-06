@@ -13,8 +13,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    birtDate: {
-        type: String,
+    birthDate: {
+        type: Date,
     },
     password: {
         type: String,
@@ -35,7 +35,6 @@ const userSchema = new mongoose.Schema({
     },
     address: {
         type: Object,
-        required: true
     }, history: {
         type: Array,
         default: []

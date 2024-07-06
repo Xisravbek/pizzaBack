@@ -19,6 +19,7 @@ const setsSchema = new mongoose.Schema({
     },
     products: {
         type: Array,
+        required: true
         
     }
     
