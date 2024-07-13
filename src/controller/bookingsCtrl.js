@@ -38,7 +38,27 @@ const bookingsCtrl ={
     },
     getBooking: async (req, res) => {
         try {
+            const id = req.params.id;
             
+            const booking = await Bookings.findById(id);
+
+            if(!booking){
+                return res.status(404).send({message: "Booking not found"})
+            }
+
+            return res.status(200).send({message: "Get booking" , booking})
+        } catch (error) {
+            return res.status(503).send({message: error.message})
+        }
+    },
+    getUserBookings: async (req ,res ) => {
+        try {
+            const userId = req.params.id;
+
+            const bookings = await Bookings.find({consumerId: userId});
+
+            return res.status(200).send({message: "Get booking", bookings})
+
         } catch (error) {
             return res.status(503).send({message: error.message})
         }

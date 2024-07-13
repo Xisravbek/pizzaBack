@@ -29,6 +29,7 @@ const bookingsSchema = new mongoose.Schema({
     },
     consumerId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "Users",
         required: true
     }
     

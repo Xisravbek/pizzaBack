@@ -14,20 +14,27 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: String,
+        
+        type: mongoose.Schema.Types.Mixed,
         required: true
     },
-    size,
+    size: {
+        type:String
+    },
     portion: {
         type: String,
         required: true   
     },
-    type: {
-        type: String,
-        enum: ["pizza" , "sushi", 'napitok' , "zakuski" , "desert" , "souses" , 'kombo'] 
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
     }
     
 
+},
+{
+    timestamps: true
 })
 
 module.exports = mongoose.model("Products" , productSchema)
