@@ -72,7 +72,7 @@ const categoryCtrl = {
             await Products.deleteMany({categoryId: id});
 
             const category = await Category.findOneAndDelete(id);
-            return res.statsu(200),send({message: "Deleted" , category})
+            return res.status(200).send({message: "Deleted" , category})
             
         } catch (error) {
             return res.status(503).send({message: error.message})
@@ -81,7 +81,7 @@ const categoryCtrl = {
     updateCategory: async (req ,res) => {
         try {
             const {id} = req.params;
-
+            const {title } = req.body;
              
             const oldCategory = await Category.findById(id);
             if(!oldCategory) {
@@ -90,8 +90,11 @@ const categoryCtrl = {
             if(!req.isAdmin){
                 return res.status(405).send({message: "Not allowed"})
             }
-
-             
+            if(!title){
+                return res.status(400).send({message: "Nothing to update"})
+            }
+            const category = await Category.findByIdAndUpdate(id , {title} , {new: true})
+            return res.status(200).send({message: "Updated" , category})
         } catch (error) {
             return res.status(503).send({message: error.message})
         }

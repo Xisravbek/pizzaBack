@@ -5,12 +5,14 @@ const {v4} = require('uuid')
 const bookingsCtrl ={
     addBooking : async (req , res ) => {
         try {
-            const {  payType, products , price } = req.body;
+            let {  payType, products , price } = req.body;
             const consumerId = req.user._id;
             const address = req.user.address;
             const orderId = v4();
-
-            const booking = await Bookings.create({...req.body, address , consumerId , orderId});
+            
+            products = JSON.parse(products)
+            console.log(products);
+            const booking = await Bookings.create({...req.body, products, address , consumerId , orderId});
 
             return res.status(201).send({message: "created" , booking})
             
@@ -21,7 +23,7 @@ const bookingsCtrl ={
     deleteBooking: async (req , res) => {
         try {
             const {id} = req.params;
-            const oldBooking = Bookings.findById(id);
+            const oldBooking = await Bookings.findById(id);
             if(!oldBooking) {
                 return res.status(404).send({message: "Booking not found"})
             }
@@ -62,5 +64,27 @@ const bookingsCtrl ={
         } catch (error) {
             return res.status(503).send({message: error.message})
         }
+    },
+    updateBooking: async (req , res) => {
+        try {
+            const id = req.params.id;
+            const {status } = req.body;
+            const oldBooking = await Bookings.findById(id);
+            if(!oldBooking) {
+                return res.status(404).send({message: "Not found"})
+            }
+            if(!req.isAdmin){
+                return res.status(405).send({message: "Not allowed"})
+            }
+
+            const booking = await Bookings.findByIdAndUpdate(id , {status} , {new: true})
+
+            return res.status(200).send({message: "Updated" , booking})
+            
+        } catch (error) {
+            return res.status(503).send({message: error.message})
+        }
     }
 }
+
+module.exports = bookingsCtrl

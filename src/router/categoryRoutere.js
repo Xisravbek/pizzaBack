@@ -7,5 +7,6 @@ router.post('/' , authMiddleware, categoryCtrl.addCategory);
 router.get('/:id' , categoryCtrl.getCategory);
 router.get('/' , categoryCtrl.getAllCategories);
 router.delete('/:id', authMiddleware , categoryCtrl.deleteCategory)
+router.put('/:id' , authMiddleware , categoryCtrl.updateCategory)
 
 module.exports = router
