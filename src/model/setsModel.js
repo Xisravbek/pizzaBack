@@ -14,7 +14,7 @@ const setsSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: String,
+        type: mongoose.Schema.Types.Mixed,
         required: true
     },
     products: {
