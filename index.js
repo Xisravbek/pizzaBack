@@ -17,7 +17,8 @@ cloudinary.config({
 const usersRouter = require('./src/router/usersRouter')
 const productsRouter = require('./src/router/productsRouter1');
 const categoryRouter = require('./src/router/categoryRoutere');
-const bookingRouter = require('./src/router/bookingRouter')
+const bookingRouter = require('./src/router/bookingRouter');
+const commentsRouter = require('./src/router/commentsRouter')
 
 const app = express()
 //miidlwares
@@ -37,6 +38,7 @@ app.use('/users' , usersRouter);
 app.use('/products', productsRouter);
 app.use('/category' , categoryRouter);
 app.use("/booking" , bookingRouter)
+app.use('/comments' , commentsRouter)
 
 const MONGO_URL = process.env.MONGO_URL
 mongoose.connect(MONGO_URL , {}).then(() => {
