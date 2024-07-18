@@ -13,6 +13,7 @@ const removeTemp = (path) => {
 
 const setsCtrl = {
     addSet : async (req , res ) => {
+       try {
         if(!req.files){
             return res.status(400).send({message: "Please send Image"})
         }
@@ -43,8 +44,39 @@ const setsCtrl = {
         }else{
             return res.status(400).send({message: "Your File is not image"})
         }
+       } catch (error) {
+        return res.status(503).send({message: error.message})
+       }
 
         
+    },
+    getSets: async (req , res ) => {
+        try {
+            const kombos = await Sets.find();
+            
+            return res.status(200).send({message: "Get Kombos" , kombos})
+        } catch (error) {
+            return res.status(503).send({message: "Your File is not image"})
+        }
+    },
+    getOneSet : async (req , res ) => {
+        try {
+            const {id} = req.params;
+
+            const kombo = await Sets.findById(id);
+
+            return res.status(200).send({message: "Get one kombo" , kombo})
+        } catch (error) {
+            return res.status(503).send({message: error.message})
+        }
+    },
+    deleteSet : async(req ,res) => {
+        try {
+            const {id} = req.params;
+            
+        } catch (error) {
+            return res.status(503).send({message: error.message})
+        }
     }
 }
 
