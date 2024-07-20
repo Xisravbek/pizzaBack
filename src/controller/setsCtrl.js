@@ -70,9 +70,26 @@ const setsCtrl = {
             return res.status(503).send({message: error.message})
         }
     },
-    deleteSet : async(req ,res) => {
+    deleteSet : async (req ,res) => {
         try {
             const {id} = req.params;
+            console.log(req.isAdmin);
+            if(!req.isAdmin){
+                return res.status(405).send({message: "Not allowed"})
+            }
+            const kombo = await Sets.findByIdAndDelete(id)
+
+            if(!kombo){
+                return res.status(404).send({message: "Not found"})
+            }
+
+            await cloudinary.v2.uploader.destroy(kombo.image.publicId, async (err) => {
+                if(err){
+                    throw err
+                }
+            })
+
+            return res.status(200).send({message: "Deleted" , kombo})
             
         } catch (error) {
             return res.status(503).send({message: error.message})
