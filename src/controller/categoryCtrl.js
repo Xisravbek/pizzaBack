@@ -1,7 +1,17 @@
 const { default: mongoose } = require('mongoose');
 const Category = require('../model/categoryModel')
 const Products = require('../model/productsModel')
-const cloudinary = require('cloudinary')
+const cloudinary = require('cloudinary');
+const fs = require('fs')
+
+
+const removeTemp = (path) => {
+    fs.unlink(path, err => {
+        if(err) {
+            throw err
+        }
+    })
+}
 
 const categoryCtrl = {
     addCategory: async (req, res ) => {
@@ -13,9 +23,36 @@ const categoryCtrl = {
             if(!req.isAdmin){
                 return res.status(405).send({message: "Not allowed"})
             }
+            if(!req.files?.image){
+                return res.status(400).send({message: "Please send image"})
+            }
 
-            const category = await Category.create({title});
-            return res.status(201).send({message: "Created" , category});
+            const content = req.files.image;
+            let image;
+            let contentType = content.mimetype.split("/")[0];
+
+            
+            
+            if(contentType == "image" || contentType == "png" 
+                || contentType == 'jpg'
+                ){
+                    const result = await cloudinary.v2.uploader.upload(content.tempFilePath, {folder: 'Pizza'}, async  (err, result) => {
+                        if(err){
+                            throw err
+                        }
+                        removeTemp(content.tempFilePath);
+                        return result
+                    })
+                    
+                     image = { url: result.url , publicId : result.public_id } 
+                     const category = await Category.create({title, image});
+                     return res.status(201).send({message: "Created category" , category});
+                
+                }else{
+                    return res.status(400).send({message: "Your File is not image"})
+                }
+
+            
         } catch (error) {
             return res.status(503).send({message: error.message})
         }
@@ -61,7 +98,15 @@ const categoryCtrl = {
                 return res.status(405).send({message: "Not allowed"})
             }
             const products = await Products.find({categoryId: id});
+            
+            //delete category image
+            await cloudinary.v2.uploader.destroy(oldCategory.image.publicId, async (err) => {
+                if(err){
+                    throw err
+                }
+            })
 
+            //delete products images
             for(let i =0; i < products.length ; i ++) {
                 await cloudinary.v2.uploader.destroy(products[i].image.publicId, async (err) => {
                     if(err){
@@ -97,6 +142,24 @@ const categoryCtrl = {
             return res.status(200).send({message: "Updated" , category})
         } catch (error) {
             return res.status(503).send({message: error.message})
+        }
+    },
+    getCategoryProducts: async (req , res) => {
+        try {
+            
+            const categories = await Category.aggregate([
+                {$lookup : {from: 'products' , let : {categoryId: "$_id"},
+                pipeline: [
+                    {$match: {$expr : {$eq :["$categoryId" , "$$categoryId"]}}}
+                ],
+                as: 'products'}}
+                
+            ]);
+
+            return res.status(200).send({message: "Get categories" , categories})
+
+        } catch (error) {
+            return res.status(503).send({message: error.message})   
         }
     }
 }
