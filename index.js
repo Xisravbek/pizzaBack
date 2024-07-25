@@ -20,7 +20,8 @@ const categoryRouter = require('./src/router/categoryRoutere');
 const bookingRouter = require('./src/router/bookingRouter');
 const commentsRouter = require('./src/router/commentsRouter')
 const komboRouter = require('./src/router/setsRouter');
-const aksiyaRouter = require('./src/router/aksiyaRouter')
+const aksiyaRouter = require('./src/router/aksiyaRouter');
+const ingredientsRouter = require('./src/router/ingredientsRouter')
 
 const app = express()
 //miidlwares
@@ -42,7 +43,8 @@ app.use('/category' , categoryRouter);
 app.use("/booking" , bookingRouter)
 app.use('/comments' , commentsRouter)
 app.use('/kombo' , komboRouter);
-app.use('/aksiya' , aksiyaRouter)
+app.use('/aksiya' , aksiyaRouter);
+app.use('/ingredients' , ingredientsRouter)
 
 const MONGO_URL = process.env.MONGO_URL
 mongoose.connect(MONGO_URL , {}).then(() => {
