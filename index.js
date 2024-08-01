@@ -18,7 +18,6 @@ const usersRouter = require('./src/router/usersRouter')
 const productsRouter = require('./src/router/productsRouter1');
 const categoryRouter = require('./src/router/categoryRoutere');
 const bookingRouter = require('./src/router/bookingRouter');
-const commentsRouter = require('./src/router/commentsRouter')
 const komboRouter = require('./src/router/setsRouter');
 const aksiyaRouter = require('./src/router/aksiyaRouter');
 const ingredientsRouter = require('./src/router/ingredientsRouter')
@@ -41,7 +40,6 @@ app.use('/users' , usersRouter);
 app.use('/products', productsRouter);
 app.use('/category' , categoryRouter);
 app.use("/booking" , bookingRouter)
-app.use('/comments' , commentsRouter)
 app.use('/kombo' , komboRouter);
 app.use('/aksiya' , aksiyaRouter);
 app.use('/ingredients' , ingredientsRouter)

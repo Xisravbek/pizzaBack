@@ -128,7 +128,7 @@ const ingredientsCtrl = {
                 title = oldIngredient.title
             }
 
-            const ingredient = await Ingredients.findByIdAndUpdate(id , {image, products , title , productExtra} , {new: true})
+            const ingredient = await Ingredients.findByIdAndUpdate(id , {image, products , title , productExtra , price} , {new: true})
             
             return res.status(200).send({message: "Updated", ingredient })
 

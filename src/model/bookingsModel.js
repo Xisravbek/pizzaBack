@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const bookingsSchema = new mongoose.Schema({
     orderId: {
-        type:String,
+        type: Number,
         required: true
     },
     status: {
@@ -15,22 +15,28 @@ const bookingsSchema = new mongoose.Schema({
         required: true
     },
     price: {
-        type:String,
+        type:Number,
         required: true
     },
     payType: {
         type: String,
         default: "None",
-        enum: ["None", "Cash" , "Card"],
+        enum: ["None", "Cash" , "Card", 'Applepay'],
     },
     products: {
-        type: Object,
+        type: Array,
         required: true
     },
     consumerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",
         required: true
+    },
+    timeManagement :{
+        type: String
+    },
+    comment: {
+        type: String
     }
     
 },

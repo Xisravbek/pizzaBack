@@ -5,14 +5,8 @@ const {v4} = require('uuid')
 const bookingsCtrl ={
     addBooking : async (req , res ) => {
         try {
-            let {  payType, products , price } = req.body;
-            const consumerId = req.user._id;
-            const address = req.user.address;
-            const orderId = v4();
             
-            products = JSON.parse(products)
-            console.log(products);
-            const booking = await Bookings.create({...req.body, products, address , consumerId , orderId});
+            const booking = await Bookings.create({...req.body});
 
             return res.status(201).send({message: "created" , booking})
             

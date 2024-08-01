@@ -73,7 +73,7 @@ const setsCtrl = {
     deleteSet : async (req ,res) => {
         try {
             const {id} = req.params;
-            console.log(req.isAdmin);
+            
             if(!req.isAdmin){
                 return res.status(405).send({message: "Not allowed"})
             }
@@ -91,6 +91,56 @@ const setsCtrl = {
 
             return res.status(200).send({message: "Deleted" , kombo})
             
+        } catch (error) {
+            return res.status(503).send({message: error.message})
+        }
+    },
+    updateSet: async (req, res ) => {
+        try {
+            const {id} = req.params;
+            let {products} = req.body;
+            if(!req.isAdmin){
+                return res.status(405).send({message: "Not allowed"})
+            }
+            const kombo = await Sets.findById(id)
+
+            if(!kombo){
+                return res.status(404).send({message: "Not found"})
+            }
+            let image = kombo.image
+            if(req.files){
+                const content = req.files.image;
+                let contentType = content.mimetype.split("/")[0];
+
+                if(contentType == "image" || contentType == "png" || contentType == 'jpg'){
+                    const result = await cloudinary.v2.uploader.upload(content.tempFilePath, {folder: 'Pizza'}, async  (err, result) => {
+                        if(err){
+                            throw err
+                        }
+                        removeTemp(content.tempFilePath);
+                        return result
+                    })
+                    
+                    image = { url: result.url , publicId : result.public_id } 
+                    
+                    await cloudinary.v2.uploader.destroy(kombo.image.publicId, async (err) => {
+                        if(err){
+                            throw err
+                        }
+                    })
+                }else{
+                    return res.status(400).send({message: "Your File is not image"})
+            }}
+            if(products){
+                products = JSON.parse(products)
+            products = kombo.products.push(products);
+            }
+            
+
+            const newKombo = await Sets.findByIdAndUpdate(id, {...req.body, products , image} , {new: true})
+
+            return res.status(200).send({message: "Updated" , kombo: newKombo})
+
         } catch (error) {
             return res.status(503).send({message: error.message})
         }

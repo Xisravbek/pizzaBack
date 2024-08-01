@@ -13,6 +13,7 @@ const ingredientsSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
+    
     productsObj:{
     },
     price:{
